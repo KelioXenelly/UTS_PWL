@@ -47,9 +47,9 @@
                 </div>
             </form>
             
-            <a href={{  route('absensi.store') }}>
-                <button type="button" class="btn btn-primary mt-4">Simpan Absensi</button>
-            </a>
+            <form method="POST" action="{{ route('absensi.store') }}">
+                @csrf
+                <button type="submit" class="btn btn-primary mt-4">Simpan Absensi</button>
         </div>
         <br>
         <table class="table table-striped table-striped-columns">
@@ -84,6 +84,8 @@
                 @endforelse
             </tbody>
         </table>
+        </form>
+
     </div>
 </body>
 </html>
