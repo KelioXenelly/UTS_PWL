@@ -17,8 +17,9 @@ Route::patch('/mata-kuliah/edit/{id}', [MataKuliahController::class, 'update'])-
 Route::delete('/mata-kuliah/delete/{id}', [MataKuliahController::class, 'delete'])->name('mata-kuliah.delete');
 
 Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
-Route::get('/absensi/create', [AbsensiController::class, 'create'])->name('absensi.create');
-Route::post('/absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
+Route::post('/absensi', [AbsensiController::class, 'store'])->name('absensi.store');
+// Route::get('/absensi/create', [AbsensiController::class, 'create'])->name('absensi.create');
+// Route::post('/absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
 // Route::get('/absensi/edit/{id}', [AbsensiController::class, 'show'])->name('absensi.show');
-Route::patch('/absensi/edit/{id}', [AbsensiController::class, 'update'])->name('absensi.update');
+// Route::patch('/absensi/edit/{id}', [AbsensiController::class, 'update'])->name('absensi.update');
 // Route::delete('/absensi/delete/{id}', [AbsensiController::class, 'delete'])->name('absensi.delete');

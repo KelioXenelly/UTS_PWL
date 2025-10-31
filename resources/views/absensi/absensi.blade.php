@@ -24,31 +24,29 @@
     <x-navbar />
     <div class="mx-5 my-4">
         <div class="d-flex justify-content-between">
-            <form class="d-flex" role="search" method="GET" action={{ route('mata-kuliah.index') }}>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label for="tanggal_absensi">Tanggal:</label>
-                        <input type="date" id="tanggal_absensi" name="tanggal_absensi" class="form-control mt-2">
-                    </div>
-                    <div class="col-md-6">
-                        <label for="matakuliah">Mata Kuliah:</label>
-                        <select 
-                            class="form-select mt-2" 
-                            aria-label="Default select example" 
-                            name="matakuliah"
-                            id="matakuliah"
-                        >
-                            <option value="" selected>Pilih Mata Kuliah</option>
-                            @foreach ($mataKuliahs as $mataKuliah)
-                                <option value={{ $mataKuliah->nama_matakuliah }}>{{ $mataKuliah->nama_matakuliah }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+            <form method="GET" action="{{ route('absensi.index') }}" class="row g-3">
+                <div class="col-md-4">
+                    <label for="tanggal_absensi" class="form-label">Tanggal</label>
+                    <input type="date" id="tanggal_absensi" name="tanggal_absensi"
+                        class="form-control"
+                        value="{{ $selectedDate ?? '' }}">
+                </div>
+                <div class="col-md-5">
+                    <label for="matakuliah_id" class="form-label">Mata Kuliah</label>
+                    <select id="matakuliah_id" name="matakuliah_id" class="form-select">
+                        <option value="">-- Pilih Mata Kuliah --</option>
+                        @foreach ($mataKuliahs as $mk)
+                            <option value="{{ $mk->id }}" {{ ($selectedMatkul == $mk->id) ? 'selected' : '' }}>
+                                {{ $mk->nama_matakuliah }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2 align-self-end">
+                    <button type="submit" class="btn btn-primary">Tampilkan</button>
                 </div>
             </form>
-            <a href={{  route('absensi.store') }}>
-                <button type="button" class="btn btn-primary mt-2">Save Absensi</button>
-            </a>
+            
         </div>
         <br>
         <table class="table table-striped table-striped-columns">
@@ -60,20 +58,25 @@
                 <th scope="col">Status</th>
             </thead>
             <tbody>
-                @forelse ($mahasiswas as $mahasiswa)
+                @forelse ($mahasiswas as $index => $mhs)
+                    @php
+                        $status = $existingAbsensi[$mhs->id]->status_absen ?? '';
+                    @endphp
                     <tr>
-                    <td scope="row">{{$mahasiswa->id}}</td>
-                    <td>{{$mahasiswa->name}}</td>
+                    <td scope="row">{{$mhs->id}}</td>
+                    <td>{{$mhs->name}}</td>
                     <td>-</td>
                     <td class="d-flex gap-2">
-                        <input type="radio" value="A"> Alpha
-                        <input type="radio" value="H"> Hadir
-                        <input type="radio" value="I"> Izin
-                        <input type="radio" value="S"> Sakit
+                        <div class="d-flex gap-3">
+                            <label><input type="radio" name="status[{{ $mhs->id }}]" value="H" {{ $status == 'H' ? 'checked' : '' }}> Hadir</label>
+                            <label><input type="radio" name="status[{{ $mhs->id }}]" value="A" {{ $status == 'A' ? 'checked' : '' }}> Alpha</label>
+                            <label><input type="radio" name="status[{{ $mhs->id }}]" value="I" {{ $status == 'I' ? 'checked' : '' }}> Izin</label>
+                            <label><input type="radio" name="status[{{ $mhs->id }}]" value="S" {{ $status == 'S' ? 'checked' : '' }}> Sakit</label>
+                        </div>
                     </td>
                 @empty
                     <tr>
-                        <td colspan="5">Data tidak ditemukan.</td>
+                        <td colspan="5" class="text-center">Data tidak ditemukan</td>
                     </tr>
                 @endforelse
             </tbody>

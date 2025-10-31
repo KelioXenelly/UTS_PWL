@@ -9,77 +9,53 @@ use Illuminate\Http\Request;
 
 class AbsensiController extends Controller
 {
-    public function index() {
-        $mataKuliahs = Matakuliah::get();
-        
-        $mahasiswas = Mahasiswa::get();
+    public function index(Request $request) {
+        $mataKuliahs = Matakuliah::all();
+        $mahasiswas = collect(); // kosong dulu
+        $selectedMatkul = $request->matakuliah_id;
+        $selectedDate = $request->tanggal_absensi;
 
-        return view('absensi.absensi', [
-            'mataKuliahs' => $mataKuliahs,
-            'mahasiswas' => $mahasiswas,
-            // 'absensis' => $absensi,
-        ]);
+        // Kalau user sudah pilih tanggal & MK → tampilkan daftar mahasiswa
+        if ($selectedMatkul && $selectedDate) {
+            $mahasiswas = Mahasiswa::all();
+
+            // Ambil absensi yang sudah ada (untuk ditampilkan di radio)
+            $existingAbsensi = Absensi::where('matakuliah_id', $selectedMatkul)
+                ->where('tanggal_absensi', $selectedDate)
+                ->get()
+                ->keyBy('mahasiswa_id'); // biar mudah akses nanti di Blade
+
+            return view('absensi.absensi', compact('mataKuliahs', 'mahasiswas', 'selectedMatkul', 'selectedDate', 'existingAbsensi'));
+        }
+
+        // Jika belum pilih filter
+        return view('absensi.absensi', compact('mataKuliahs', 'mahasiswas', 'selectedMatkul', 'selectedDate'));
     }
 
     public function store(Request $request) {
         $validated = $request->validate([
-            'mahasiswa_id' => 'required|integer|exists:mahasiswas,id',
-            'matakuliah_id' => 'required|integer|exists:matakuliah,id',
             'tanggal_absensi' => 'required|date',
+            'matakuliah_id' => 'required|exists:matakuliahs,id',
+            'status' => 'required|array',
         ]);
 
-        Absensi::updateOrCreate([
-            $validated,
-            'status_absen' => $request->input('status_absen'),
-        ]);
+        $tanggal = $validated['tanggal_absensi'];
+        $matakuliah_id = $validated['matakuliah_id'];
 
-        return redirect()->route('mata-kuliah.index')
-            ->with('success', 'Mata Kuliah Berhasil Ditambahkan.');
+        foreach ($validated['status'] as $mahasiswa_id => $status) {
+            Absensi::updateOrCreate(
+                [
+                    'mahasiswa_id' => $mahasiswa_id,
+                    'matakuliah_id' => $matakuliah_id,
+                    'tanggal_absensi' => $tanggal,
+                ],
+                ['status_absen' => $status]
+            );
+        }
+
+        return redirect()->route('absensi.index', [
+            'tanggal_absensi' => $tanggal,
+            'matakuliah_id' => $matakuliah_id,
+        ])->with('success', 'Data absensi berhasil disimpan!');
     }
-
-    // public function show($id) {
-    //     $mataKuliah = Matakuliah::find($id);
-
-    //     if(!$mataKuliah) {
-    //         return redirect()->route('mata-kuliah.index')
-    //         ->with('error', 'Mata Kuliah Tidak Ditemukan');
-    //     }
-
-    //     return view('matakuliah.updatematakuliah', [
-    //         'mataKuliah' => $mataKuliah,
-    //     ]);
-    // }
-
-    // public function update(Request $request, $id) {
-    //     $mataKuliah = Matakuliah::find($id);
-
-    //     if(!$mataKuliah) {
-    //         return redirect()->route('mata-kuliah.index')
-    //         ->with('error', 'Mata Kuliah Tidak Ditemukan');
-    //     }
-
-    //     $validated = $request->validate([
-    //         'kode' => 'required|string|max:255',
-    //         'nama_matakuliah' => 'required|string|max:255',
-    //     ]); 
-
-    //     $mataKuliah->update($validated);
-
-    //     return redirect()->route('mata-kuliah.index')
-    //         ->with('success', 'Mata Kuliah Berhasil Diperbarui');
-    // }
-
-    // public function delete($id) {
-    //     $mataKuliah = Matakuliah::find($id);
-
-    //     if(!$mataKuliah) {
-    //         return redirect()->route('mata-kuliah.index')
-    //         ->with('error', 'Mata Kuliah Tidak Ditemukan');
-    //     }
-
-    //     $mataKuliah->delete();
-        
-    //     return redirect()->route('mata-kuliah.index')
-    //         ->with('success', 'Mata Kuliah Berhasil Dihapus');
-    // }
 }
