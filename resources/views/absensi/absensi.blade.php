@@ -47,6 +47,9 @@
                 </div>
             </form>
             
+            <a href={{  route('absensi.store') }}>
+                <button type="button" class="btn btn-primary mt-4">Simpan Absensi</button>
+            </a>
         </div>
         <br>
         <table class="table table-striped table-striped-columns">
