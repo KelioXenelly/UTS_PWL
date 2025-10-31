@@ -11,5 +11,9 @@ class Matakuliah extends Model
         'nama_matakuliah'
     ];
 
-    protected $table = 'matakuliahs';
+    protected $table = 'matakuliah';
+
+    public function absensis() {
+        return $this->hasMany(Absensi::class);
+    }
 }

@@ -14,4 +14,12 @@ class Absensi extends Model
     ];
 
     protected $table = 'absensis';
+
+    public function mahasiswa() {
+        return $this->belongsTo(Mahasiswa::class, 'mahasiswa_id');
+    }
+
+    public function matakuliah() {
+        return $this->belongsTo(Matakuliah::class, 'matakuliah_id');
+    }
 }

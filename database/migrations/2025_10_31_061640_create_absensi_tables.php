@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('absensis', function (Blueprint $table) {
             $table->id();
-            $table->uuid('mahasiswa_id');
-            $table->uuid('matakuliah_id');
+            $table->foreignId('mahasiswa_id')->constrained()->onUpdate('cascade')->onDelete('restrict');
+            $table->foreignId('matakuliah_id')->constrained('matakuliah')->onUpdate('cascade')->onDelete('restrict');
             $table->date('tanggal_absensi');
             $table->enum('status_absen', ['A', 'H', 'I', 'S']);
             $table->timestamps();

@@ -16,4 +16,8 @@ class Mahasiswa extends Model
     ];
 
     protected $table = 'mahasiswas';
+
+    public function absensis() {
+        return $this->hasMany(Absensi::class);
+    }
 }
