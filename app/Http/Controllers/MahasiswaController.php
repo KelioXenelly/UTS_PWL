@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mahasiswa;
+use App\Models\Matakuliah;
 use Illuminate\Http\Request;
 
 class MahasiswaController extends Controller
@@ -45,7 +46,16 @@ class MahasiswaController extends Controller
      */
     public function show($id)
     {
-        
+        $mahasiswa = Mahasiswa::find($id);
+
+        if(!$mahasiswa) {
+            return redirect()->route('mahasiswa.index')
+                ->with('error', 'Mahasiswa Tidak Ditemukan');
+        }
+
+        return view('updatemahasiswa', [
+            'mahasiswa' => $mahasiswa,
+        ]);
     }
 
     /**
@@ -61,7 +71,26 @@ class MahasiswaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
+        $mahasiswa = Mahasiswa::where('id', $id)->first();
+
+        if(!$mahasiswa) {
+            return redirect()->route('mahasiswa.index')
+                ->with('error', 'Mahasiswa tidak ditemukan');
+        }
+
+        $validated = $request->validate([
+            'NIM'           => 'required|string|max:255',
+            'name'          => 'required|string|max:255',
+            'tempat_lahir'  => 'required|string|max:255',
+            'tanggal_lahir' => 'required|date',
+            'jurusan'       => 'required|in:Bisnis Digital,Sistem dan Teknologi Informasi,Kewirausahaan',
+            'angkatan'      => 'required|integer|min:1500|max:2099',
+        ]);
+
+        $mahasiswa->update($validated);
+
+        return redirect()->route('mahasiswa.index')
+            ->with('success', 'Data Mahasiswa Berhasil Diupdate');
     }
 
     /**
@@ -69,6 +98,16 @@ class MahasiswaController extends Controller
      */
     public function destroy($id)
     {
-        
+        $mahasiswa = Mahasiswa::where('id', $id)->first();
+
+        if(!$mahasiswa) {
+            return redirect()->route('mahasiswa.index')
+                ->with('error', 'Mahasiswa tidak ditemukan');
+        }
+
+        $mahasiswa->delete();
+
+        return redirect()->route('mahasiswa.index')
+            ->with('success', 'Data Mahasiswa Berhasil Dihapus');
     }
 }

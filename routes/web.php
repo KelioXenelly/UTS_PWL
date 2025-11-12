@@ -9,7 +9,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
+Route::get('/mahasiswa', [MahasiswaController::class, 'index'])->name('mahasiswa.index');
+Route::get('/mahasiswa/create', [MahasiswaController::class, 'create'])->name('mahasiswa.create-form');
+Route::post('/mahasiswa/store', [MahasiswaController::class, 'store'])->name('mahasiswa.store');
+Route::get('/mahasiswa/edit/{id}', [MahasiswaController::class, 'show'])->name('mahasiswa.update-form');
+Route::patch('/mahasiswa/edit/{id}', [MahasiswaController::class, 'update'])->name('mahasiswa.update');
+Route::delete('/mahasiswa/delete/{id}', [MahasiswaController::class, 'destroy'])->name('mahasiswa.delete');
 
 Route::get('/mata-kuliah', [MataKuliahController::class, 'index'])->name('mata-kuliah.index');
 Route::get('/mata-kuliah/create', [MataKuliahController::class, 'create'])->name('mata-kuliah.create');
