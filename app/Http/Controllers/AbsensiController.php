@@ -35,7 +35,7 @@ class AbsensiController extends Controller
     public function store(Request $request) {
         $validated = $request->validate([
             'tanggal_absensi' => 'required|date',
-            'matakuliah_id' => 'required|exists:matakuliahs,id',
+            'matakuliah_id' => 'required|exists:matakuliah,id',
             'status' => 'required|array',
         ]);
 

@@ -49,6 +49,8 @@
             
             <form method="POST" action="{{ route('absensi.store') }}">
                 @csrf
+                <input type="hidden" name="tanggal_absensi" value="{{ $selectedDate }}">
+                <input type="hidden" name="matakuliah_id" value="{{ $selectedMatkul }}">
                 <button type="submit" class="btn btn-primary mt-4">Simpan Absensi</button>
         </div>
         <br>
@@ -68,7 +70,24 @@
                     <tr>
                     <td scope="row">{{$mhs->id}}</td>
                     <td>{{$mhs->name}}</td>
-                    <td>-</td>
+                    <td>
+                        @switch($status)
+                            @case('H')
+                                <span class="badge bg-success">Hadir</span>
+                                @break
+                            @case('A')
+                                <span class="badge bg-danger">Alpa</span>
+                                @break
+                            @case('I')
+                                <span class="badge bg-warning">Izin</span>
+                                @break
+                            @case('S')
+                                <span class="badge bg-secondary">Sakit</span>
+                                @break
+                            @default
+                                <span>-</span>
+                        @endswitch
+                    </td>
                     <td class="d-flex gap-2">
                         <div class="d-flex gap-3">
                             <label><input type="radio" name="status[{{ $mhs->id }}]" value="H" {{ $status == 'H' ? 'checked' : '' }}> Hadir</label>
