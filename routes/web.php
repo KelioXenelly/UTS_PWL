@@ -1,13 +1,20 @@
 <?php
 
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\MataKuliahController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('authentication.signin');
 });
+
+Route::get('/sign-in', [AuthController::class,'showSignIn'])->name('sign-in-form');
+Route::get('/sign-in/process', [AuthController::class,'signIn'])->name('sign-in');
+Route::get('/sign-up', [AuthController::class,'showSignUp'])->name('sign-up-form');
+Route::post('/sign-up/process', [AuthController::class,'signUp'])->name('sign-up');
+Route::get('/sign-out', [AuthController::class,'signOut'])->name('sign-out');
 
 Route::get('/mahasiswa', [MahasiswaController::class, 'index'])->name('mahasiswa.index');
 Route::get('/mahasiswa/create', [MahasiswaController::class, 'create'])->name('mahasiswa.create-form');
