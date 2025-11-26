@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mahasiswa;
-use App\Models\Matakuliah;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class MahasiswaController extends Controller
@@ -29,13 +29,24 @@ class MahasiswaController extends Controller
      */
     public function store(Request $request)
     {
-        $data = Mahasiswa::create([
+        Mahasiswa::create([
             'name' => $request->name,
             'NIM' => $request->NIM,
             'tempat_lahir' => $request->tempat_lahir,
             'tanggal_lahir' => $request->tanggal_lahir,
             'jurusan' => $request->jurusan,
             'angkatan' => $request->angkatan
+        ]);
+
+        $username = $request->name;
+        $usernameLower = strtolower($username);
+        $usernameFormatted = preg_replace('/\s+/', '.', $usernameLower);
+        $email = $usernameFormatted . '@gmail.com';
+
+        User::create([
+            'name' => $username,
+            'email' => $email,
+            'password' => 'user1234',
         ]);
 
         return redirect()->route('mahasiswa.index');
