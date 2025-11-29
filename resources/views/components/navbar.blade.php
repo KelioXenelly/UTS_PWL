@@ -11,6 +11,9 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href={{ route('absensi.index') }}>Absensi</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href={{ route('users.index') }}>Users</a>
+                </li>
             </ul>
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 justify-content-end">
                 <li class="nav-item">

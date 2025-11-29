@@ -4,6 +4,7 @@ use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\MataKuliahController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['guest'])->group(function () {
@@ -19,7 +20,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::get('/sign-out', [AuthController::class,'signOut'])->name('sign-out');
-    
+
     Route::get('/mahasiswa', [MahasiswaController::class, 'index'])->name('mahasiswa.index');
     Route::get('/mahasiswa/create', [MahasiswaController::class, 'create'])->name('mahasiswa.create-form');
     Route::post('/mahasiswa/store', [MahasiswaController::class, 'store'])->name('mahasiswa.store');
@@ -34,6 +35,22 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/mata-kuliah/edit/{id}', [MataKuliahController::class, 'update'])->name('mata-kuliah.update');
     Route::delete('/mata-kuliah/delete/{id}', [MataKuliahController::class, 'delete'])->name('mata-kuliah.delete');
     
-    Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
-    Route::post('/absensi', [AbsensiController::class, 'store'])->name('absensi.store');
+    Route::middleware(['role:Dosen'])->group(function () {
+        Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
+        Route::post('/absensi', [AbsensiController::class, 'store'])->name('absensi.store');
+    });
+
+    Route::middleware(['role:Admin'])->group(function () {
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
+        Route::get('/users/edit/{id}', [UserController::class, 'show'])->name('users.show');
+        Route::patch('/users/edit/{id}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/delete/{id}', [UserController::class, 'destroy'])->name('users.delete');
+    });
+
 });
+
+Route::get('/403', function() {
+    return view('errors.403');
+})->name('unauthorized');

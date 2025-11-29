@@ -19,5 +19,12 @@ class DatabaseSeeder extends Seeder
             MahasiswaSeeder::class,
             MataKuliahSeeder::class,
         ]);
+        
+        User::firstOrCreate([
+            'name' => 'Super Admin',
+            'email' => 'super_admin@gmail.com',
+            'password' => bcrypt('admin1234'),
+            'role' => 'Admin',
+        ]);
     }
 }
